@@ -67,7 +67,7 @@ def compare_partial(a, guess, code)
   # algorithm taken from my bubble_sort, so could be refactored if I modify my sort to accept predicates
   code.each_with_index.reduce(a) do |a, (elem, i)| 
     unless a[i] == 'O'
-      j = i+1
+      j = 0
       while j < code.length
           if guess[i] == code[j]
             a[i] = '?'
