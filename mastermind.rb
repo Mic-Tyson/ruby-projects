@@ -51,14 +51,10 @@ class Code_maker
 end
 
 
-class Guess
-  
-
-end
-
-
-def compare_guess(guess)
-
+def compare_guess(guess, code)
+  a = []
+  a += compare_exact(guess,code)
+  compare_partial(a, guess, code)
 end
 
 def compare_exact(guess, code)
@@ -68,12 +64,26 @@ def compare_exact(guess, code)
 end
 
 def compare_partial(a, guess, code)
-
-
+  # algorithm taken from my bubble_sort, so could be refactored if I modify my sort to accept predicates
+  code.each_with_index.reduce(a) do |a, (elem, i)| 
+    unless a[i] == 'O'
+      j = i+1
+      while j < code.length
+          if guess[i] == code[j]
+            a[i] = '?'
+          end
+          j+=1
+        end
+      end
+        a
+  end
 end
 
 
 
 test = Code_maker.new().make_code
+guess = ["red", "white", "blue", "orange", "yellow"]
 
-p compare_exact(["red", "white", "blue", "orange", "yellow"], test)
+p test
+p guess
+p compare_guess(guess, test)
