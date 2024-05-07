@@ -62,7 +62,7 @@ class Game
 
   def query_input
     curr_player = @board.moves_made.even? ? 1 : 2
-    puts "Make your move Player #{curr_player}"
+    puts "Make your move '(x,y)' Player #{curr_player}"
     loop do
       move = gets.chomp
       begin
