@@ -7,6 +7,10 @@
 # elem in the code
 # we then use symbols to display exact, partial, and full matches
 
+# todo: 
+# 1. Improve cpu logic
+# 2. Shorten play function
+
 # handle io, and mastermind
 class Game
   def initialize
@@ -14,16 +18,29 @@ class Game
   end
 
   def play
-    puts "Guess my code using the following colors #{@mastermind.code_maker.CODE_OPTIONS}"
-    12.times do
-      guess = get_guess
-      puts 'Enter your guess'
+    puts 'Guess or Make? (g/m)'
+    choice = gets.chomp
+    if choice == 'g'
+      puts "Guess my code using the following colors #{@mastermind.code_maker.CODE_OPTIONS}"
+      12.times do
+        puts 'Enter your guess'
+        guess = get_guess
+        feedback = @mastermind.compare_guess(guess)
+        p feedback
+        return p 'you win' if feedback.all?('O')
+      end
+      "You lose! The correct code was: #{@mastermind.code}"
+    elsif choice == 'm'
+      @mastermind.code = get_code
+      guess = cpu_guess
       feedback = @mastermind.compare_guess(guess)
-      p feedback
-      return p 'you win' if feedback.all?('O')
+      return puts "You lose! I guessed correctly: #{@mastermind.code}" if feedback.all?('O')
+
+      puts "You win! I guessed incorrectly: #{guess}"
     end
-    "You lose! The correct code was: #{@mastermind.code}"
   end
+
+  private
 
   def get_code
     puts 'Enter a 5 digit, comma-seperated, code utilising the following colours:'
@@ -36,8 +53,6 @@ class Game
       puts 'You aren\'t allowed to reuse colours'
     end
   end
-
-  private
 
   def validate_guess?(guess)
     guess.size == @mastermind.code_maker.CODE_LENGTH &&
@@ -54,11 +69,33 @@ class Game
       puts "Invalid input. Please enter #{@mastermind.code_maker.CODE_LENGTH} comma-separated colours."
     end
   end
+
+  def cpu_guess
+    guess_buffer = Array.new(5, nil)
+    guess = @mastermind.code_maker.make_code
+    potential_choices = @mastermind.code_maker.CODE_OPTIONS
+    code_len = @mastermind.code_maker.CODE_LENGTH
+    11.times do
+      feedback = @mastermind.compare_guess(guess)
+      feedback.each_with_index do |elem, i|
+        case elem
+        when 'O'
+          guess_buffer[i] = guess[i]
+        when 'X'
+          potential_choices.delete(guess[i])
+        end
+      end
+      guess = potential_choices.sample(code_len).uniq
+      guess += potential_choices.sample(code_len - code.size) until guess.size == code_len # keep adding samples
+    end
+    guess_buffer
+  end
 end
 
 # handle code checking and creation
 class Mastermind
-  attr_reader :code, :code_maker
+  attr_accessor :code
+  attr_reader :code_maker
 
   def initialize
     @code_maker = Code_maker.new
@@ -117,6 +154,6 @@ end
 
 test = Game.new
 
-p test.get_code
+test.play
 
 # red, yellow, orange, white, green
