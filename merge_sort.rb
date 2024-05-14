@@ -17,19 +17,16 @@ def merge(lhs, rhs)
       merged << rhs.shift
     end
   end
-  merged + lhs + rhs
+  merged.concat(lhs).concat(rhs)
 end
 
 
 def my_merge_sort(array)
-  return if array.length == 1
+  return array if array.length == 1
   midpoint = (array.length/2.0).ceil
-  lhs = (array.slice(0...midpoint))
-  rhs = (array.slice(midpoint...array.length))
-  my_merge_sort(lhs)
-  my_merge_sort(rhs)
+  lhs = my_merge_sort(array.slice(0...midpoint))
+  rhs = my_merge_sort(array.slice(midpoint...array.length))
   merge(lhs, rhs)
-  
 end
 
-p my_merge_sort([1,5,6,21,67])
+p my_merge_sort([1, 21, 5, 6 ,67])
