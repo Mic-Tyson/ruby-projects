@@ -1,5 +1,6 @@
 class Link
   attr_accessor :val, :succ
+
   def initialize(val = nil, link = nil)
     @val = val
     @succ = link
@@ -8,6 +9,7 @@ end
 
 class List
   attr_accessor :start
+
   def initialize(link = nil)
     @start = link
   end
@@ -16,7 +18,7 @@ class List
     return @start = Link.new(val) if @start.nil?
 
     curr = @start
-    curr = curr.succ while !curr.succ.nil?
+    curr = curr.succ until curr.succ.nil?
     curr.succ = Link.new(val)
   end
 
@@ -26,28 +28,30 @@ class List
 
   def size
     return 0 if @start.nil?
+
     i = 1
     curr = @start
-    while !curr.succ.nil?
-      curr = curr.succ 
+    until curr.succ.nil?
+      curr = curr.succ
       i += 1
     end
     i
   end
 
   def head
-    return @start
+    @start
   end
 
   def tail
     return nil if @start.nil?
+
     curr = @start
-    curr = curr.succ while !curr.succ.nil?
+    curr = curr.succ until curr.succ.nil?
     curr
   end
 
   def at(idx)
-    return nil if @start.nil? || idx < 0 || idx >= size
+    return nil if @start.nil? || idx.negative? || idx >= size
 
     curr = @start
     i = 0
@@ -60,14 +64,14 @@ class List
 
   def pop
     return if @start.nil?
-  
+
     if @start.succ.nil?
       temp = @start
       @start = nil
       return temp
     end
-  
-    n = size - 2  
+
+    n = size - 2
     i = 0
     curr = @start
     while i < n
@@ -77,7 +81,7 @@ class List
     temp = curr.succ
     curr.succ = nil
     temp
-  end  
+  end
 
   def contains?(val)
     return false if @start.nil?
@@ -85,7 +89,7 @@ class List
     curr = @start
     return true if curr.val == val
 
-    while !curr.succ.nil?
+    until curr.succ.nil?
       curr = curr.succ
       return true if curr.val == val
     end
@@ -99,7 +103,7 @@ class List
     return 0 if curr.val == val
 
     i = 0
-    while !curr.succ.nil?
+    until curr.succ.nil?
       curr = curr.succ
       i += 1
       return i if curr.val == val
@@ -108,38 +112,38 @@ class List
   end
 
   def to_s
-    return "nil" if @start.nil?
+    return 'nil' if @start.nil?
 
-    s = ""
+    s = ''
     curr = @start
-    while !curr.succ.nil?
-      s += "(#{curr.val}) -> " 
+    until curr.succ.nil?
+      s += "(#{curr.val}) -> "
       curr = curr.succ
     end
-    s += "(#{curr.val}) -> nil" 
+    s + "(#{curr.val}) -> nil"
   end
 
   def insert_at(val, idx)
-    return nil if idx > size || idx < 0
-  
-    if idx == 0
+    return nil if idx > size || idx.negative?
+
+    if idx.zero?
       @start = Link.new(val, @start)
     else
       prev = at(idx - 1)
       prev.succ = Link.new(val, prev.succ)
     end
   end
-  
+
   def remove_at(idx)
-    return nil if idx >= size || idx < 0
-    if idx == 0
+    return nil if idx >= size || idx.negative?
+
+    if idx.zero?
       @start = @start.succ
     else
       prev = at(idx - 1)
       prev.succ = prev.succ.succ
     end
   end
-  
 end
 
 test = List.new
