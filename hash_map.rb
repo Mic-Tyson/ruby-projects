@@ -93,6 +93,7 @@ class HashMap
 
   def clear
     array.each_with_index { |_, idx| array[idx] = nil }
+    @size = 0
   end
 
   def keys
